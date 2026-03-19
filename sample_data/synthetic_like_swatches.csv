@@ -1,0 +1,4 @@
+swatch_record_id,source_palette_id,source_name,source_format,source_profile,raw_source_values,embedded_colour_id,metadata_issue,provenance
+swatch-00001,palette-001,Bright Coral [demo-001],hex,sRGB IEC61966-2.1,"{""hex"":""#E96A5C""}",demo-001,,"{""generator"":""synthetic-like"",""source_type"":""fixture""}"
+swatch-00002,palette-001,Soft Cyan [demo-002],rgb,sRGB IEC61966-2.1,"{""r"":102,""g"":192,""b"":210}",demo-002,,"{""generator"":""synthetic-like"",""source_type"":""fixture""}"
+swatch-00003,palette-001,Muted Plum [demo-003],cmyk,FOGRA39,"{""c"":24,""m"":61,""y"":0,""k"":27}",demo-003,,"{""generator"":""synthetic-like"",""source_type"":""fixture""}"

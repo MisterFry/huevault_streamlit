@@ -1,0 +1,3 @@
+streamlit>=1.42,<2.0
+# Databricks app dependency resolution installs HueVault from the bundled wheel.
+./wheels/huevault-0.1.0-py3-none-any.whl

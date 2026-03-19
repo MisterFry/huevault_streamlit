@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.streamlit/*
+!.streamlit/config.toml
+.streamlit_state/
+streamlit.log
+streamlit.err.log
+
+# Databricks app packaging keeps bundled dependency wheels in-repo.
+!wheels/
+!wheels/*.whl

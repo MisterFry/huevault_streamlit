@@ -1,0 +1,12 @@
+command:
+  - streamlit
+  - run
+  - app.py
+env:
+  - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+    value: "false"
+  - name: HUEVAULT_RUNTIME_MODE
+    value: databricks
+  - name: HUEVAULT_APP_HOME
+    value: /Workspace/Users/${DATABRICKS_USERNAME}/huevault_streamlit
+

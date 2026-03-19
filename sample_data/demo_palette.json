@@ -1,0 +1,32 @@
+[
+  {
+    "input_id": "demo-red-01",
+    "name": "Demo Red",
+    "source_format": "hex",
+    "source_values": "#C63D2F",
+    "provenance": {
+      "palette": "demo",
+      "author": "huevault_streamlit"
+    }
+  },
+  {
+    "input_id": "demo-green-01",
+    "name": "Demo Green",
+    "source_format": "rgb",
+    "source_values": [52, 170, 92],
+    "provenance": {
+      "palette": "demo",
+      "author": "huevault_streamlit"
+    }
+  },
+  {
+    "input_id": "demo-blue-01",
+    "name": "Demo Blue",
+    "source_format": "lab",
+    "source_values": [42.5, 14.2, -45.1],
+    "provenance": {
+      "palette": "demo",
+      "author": "huevault_streamlit"
+    }
+  }
+]
