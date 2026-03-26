@@ -11,6 +11,11 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+```bash
+python3 -m ensurepip --upgrade
+
+```
+
 For source-based local development, this app can also import the sibling
 `../huevault` repo directly through its bootstrap path helper.
 
