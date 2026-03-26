@@ -125,6 +125,52 @@ def catalogue_rows() -> list[dict]:
     return get_catalogue_rows(service())
 
 
+def _table_display_value(value: object) -> str:
+    if value is None or value == "":
+        return "—"
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, sort_keys=True, ensure_ascii=True)
+    return str(value)
+
+
+def _provenance_items(value: object) -> list[tuple[str, object]]:
+    if not value:
+        return []
+    if isinstance(value, dict):
+        return list(value.items())
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return [("provenance", value)]
+        if isinstance(parsed, dict):
+            return list(parsed.items())
+        return [("provenance", parsed)]
+    return [("provenance", value)]
+
+
+def browse_detail_table_rows(row: dict) -> list[dict[str, str]]:
+    rows = [
+        {"Field": "Catalogue ID", "Value": _table_display_value(row.get("catalogue_id"))},
+        {"Field": "Colour ID", "Value": _table_display_value(row.get("colour_id"))},
+        {"Field": "Name", "Value": _table_display_value(row.get("name"))},
+        {"Field": "Status", "Value": _table_display_value(row.get("status"))},
+        {"Field": "Order Key", "Value": _table_display_value(row.get("order_key"))},
+        {"Field": "Lab", "Value": format_triplet((float(row["lab_l"]), float(row["lab_a"]), float(row["lab_b"])))},
+        {"Field": "LCh", "Value": format_triplet((float(row["lch_l"]), float(row["lch_c"]), float(row["lch_h"])))},
+        {"Field": "Collision Group", "Value": _table_display_value(row.get("collision_group_id"))},
+        {"Field": "Collision Origin", "Value": _table_display_value(row.get("collision_origin_catalogue_id"))},
+        {"Field": "Source Format", "Value": _table_display_value(row.get("source_format"))},
+        {"Field": "Source ID", "Value": _table_display_value(row.get("source_id"))},
+        {"Field": "Source Profile", "Value": _table_display_value(row.get("source_profile"))},
+    ]
+
+    for key, value in _provenance_items(row.get("provenance")):
+        rows.append({"Field": f"Provenance: {key}", "Value": _table_display_value(value)})
+
+    return rows
+
+
 def build_colour_option_label(row: dict) -> str:
     parts = [str(row["catalogue_id"]), str(row["colour_id"])]
     if row.get("name"):
@@ -272,6 +318,13 @@ def filtered_catalogue(rows: list[dict]) -> list[dict]:
     if not rows:
         return []
     search = st.text_input("Search by colour ID, catalogue ID, or name", key="browse_search").strip().lower()
+    collision_filter = st.selectbox(
+        "Collision Filter",
+        ["all", "collision only", "non-collision only", "collision origins", "collision members only"],
+        index=0,
+        key="browse_collision_filter",
+        help="Use this to quickly isolate collision examples for demos.",
+    )
     hue_range = st.slider("Hue Range", 0.0, 360.0, (0.0, 360.0), key="browse_hue")
     lightness_range = st.slider("Lightness Range", 0.0, 100.0, (0.0, 100.0), key="browse_lightness")
     chroma_cap = max(float(row["lch_c"]) for row in rows)
@@ -282,6 +335,16 @@ def filtered_catalogue(rows: list[dict]) -> list[dict]:
     for row in rows:
         haystack = " ".join(str(row.get(key, "")) for key in ("catalogue_id", "colour_id", "name")).lower()
         if search and search not in haystack:
+            continue
+        is_collision_member = bool(row.get("is_collision_member"))
+        is_collision_origin = bool(row.get("is_collision_origin"))
+        if collision_filter == "collision only" and not is_collision_member:
+            continue
+        if collision_filter == "non-collision only" and is_collision_member:
+            continue
+        if collision_filter == "collision origins" and not (is_collision_member and is_collision_origin):
+            continue
+        if collision_filter == "collision members only" and not (is_collision_member and not is_collision_origin):
             continue
         if not (hue_range[0] <= float(row["lch_h"]) <= hue_range[1]):
             continue
@@ -625,6 +688,11 @@ with tabs[1]:
     if not rows:
         st.info("Load a dataset or ingest a manual colour first.")
     else:
+        show_detail_tables = st.checkbox(
+            "Show row detail tables",
+            value=False,
+            help="Render each row's metadata as a two-column table for easier reading.",
+        )
         filtered = filtered_catalogue(rows)
         page_size = st.selectbox("Page Size", [10, 20, 50, 100], index=1)
         total_pages = max(1, (len(filtered) + page_size - 1) // page_size)
@@ -649,7 +717,10 @@ with tabs[1]:
                         f"group `{row.get('collision_group_id')}`  |  "
                         f"origin `{row.get('collision_origin_catalogue_id')}`"
                     )
-                st.caption(provenance_summary(row["provenance"]))
+                if show_detail_tables:
+                    st.table(browse_detail_table_rows(row))
+                else:
+                    st.caption(provenance_summary(row["provenance"]))
             with right:
                 if st.button("Inspect", key=f"inspect_{row['catalogue_id']}", use_container_width=True):
                     st.session_state.selected_catalogue_id = row["catalogue_id"]

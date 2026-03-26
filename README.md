@@ -24,7 +24,7 @@ This repo follows the Databricks app pattern used in the sibling Streamlit app:
 
 The HueVault package is expected to be bundled as:
 
-- `wheels/huevault-0.1.0-py3-none-any.whl`
+- `wheels/huevault-0.1.1-py3-none-any.whl`
 
 `requirements.txt` points directly at that wheel so the Databricks app bundle is
 self-contained at deploy time.
@@ -32,7 +32,7 @@ self-contained at deploy time.
 ## Deployment flow
 
 1. Build the HueVault wheel from the sibling repo.
-2. Place `huevault-0.1.0-py3-none-any.whl` in `wheels/`.
+2. Place `huevault-0.1.1-py3-none-any.whl` in `wheels/`.
 3. Verify `requirements.txt` still references that exact filename.
 4. Deploy the repo as a Databricks App.
 
