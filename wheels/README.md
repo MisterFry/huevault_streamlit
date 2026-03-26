@@ -3,7 +3,7 @@ deploying the Databricks app.
 
 Expected artifact:
 
-- `huevault-0.1.0-py3-none-any.whl`
+- `huevault-0.1.1-py3-none-any.whl`
 
 Expected flow:
 1. Build the HueVault wheel from the sibling repo.
@@ -13,4 +13,3 @@ Expected flow:
 
 The Databricks packaging pattern for this repo intentionally keeps the wheel in
 source control so the app bundle is self-contained.
-
